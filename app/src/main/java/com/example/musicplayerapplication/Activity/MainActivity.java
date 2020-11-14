@@ -2,6 +2,8 @@ package com.example.musicplayerapplication.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -11,9 +13,12 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.TableLayout;
+import android.widget.Toast;
 
 import com.example.musicplayerapplication.Fragment.AlbumFragment;
 import com.example.musicplayerapplication.Fragment.SingerFragment;
@@ -26,6 +31,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final int REQUEST_CODE = 0;
+
     private TabLayout mTabLayout;
     private ViewPager2 mViewPager;
     private PageAdapter mPageAdapter;
@@ -35,8 +42,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        permission();
         findViews();
         initView();
+    }
+
+    private void permission() {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(
+                    MainActivity.this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_CODE);
+        } else{
+            Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void findViews() {
@@ -105,4 +125,19 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE){
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                //Do what ever you want permission related.
+                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
+            } else {
+                ActivityCompat.requestPermissions(
+                        MainActivity.this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        REQUEST_CODE);
+            }
+        }
+    }
 }
