@@ -81,11 +81,11 @@ public class MainActivity extends AppCompatActivity {
                     public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
                         switch (position) {
                             case 0: {
-                                tab.setText("Songs");
+                                tab.setText("Tracks");
                                 break;
                             }
                             case 1: {
-                                tab.setText("Singers");
+                                tab.setText("Artists");
                                 break;
                             }
                             case 2: {
