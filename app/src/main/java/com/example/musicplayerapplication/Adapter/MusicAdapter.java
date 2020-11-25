@@ -1,8 +1,8 @@
 package com.example.musicplayerapplication.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaMetadataRetriever;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.musicplayerapplication.Activity.PlayerActivity;
 import com.example.musicplayerapplication.Model.Music;
 import com.example.musicplayerapplication.R;
 
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder> {
 
+    public static final String EXTRA_POSITION = "com.example.musicplayerapplication.position";
     private Context mContext;
     private ArrayList<Music> mMusics;
 
@@ -50,6 +52,15 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
                     .load(image)
                     .into(holder.mImageView);
         }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = PlayerActivity.newIntent(mContext);
+                intent.putExtra(EXTRA_POSITION, position);
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override
