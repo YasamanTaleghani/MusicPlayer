@@ -44,7 +44,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
             mImageViewShuffleBtn, mImageViewRepeatBtn, mImageViewPlayPauseBtn, mImageViewMenuBtn;
     private SeekBar mSeekBar;
     private int position = -1;
-    private static ArrayList<Music> mMusicLists= new ArrayList<>();
+    public static ArrayList<Music> mMusicLists= new ArrayList<>();
     private static Uri uri;
     private static MediaPlayer mMediaPlayer;
     private Handler mHandler = new Handler();

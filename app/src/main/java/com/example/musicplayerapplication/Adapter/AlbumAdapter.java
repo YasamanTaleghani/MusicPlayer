@@ -1,6 +1,7 @@
 package com.example.musicplayerapplication.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaMetadataRetriever;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.musicplayerapplication.Activity.AlbumDetailsActivity;
 import com.example.musicplayerapplication.Model.Music;
 import com.example.musicplayerapplication.R;
 
@@ -21,7 +23,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.MyAlbumHolde
 
     private Context mContext;
     private ArrayList<Music> mMusicsAlbums;
-
 
     public AlbumAdapter(Context context, ArrayList<Music> musicsAlbums) {
         mContext = context;
@@ -46,6 +47,14 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.MyAlbumHolde
                     .load(image)
                     .into(holder.mImageViewAlbum);
         }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String albumName = mMusicsAlbums.get(position).getAlbum();
+                Intent intent = AlbumDetailsActivity.newIntent(mContext, albumName);
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -72,6 +81,5 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.MyAlbumHolde
         retriever.release();
         return art;
     }
-
 
 }

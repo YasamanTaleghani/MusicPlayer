@@ -13,33 +13,34 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.musicplayerapplication.Activity.SingerDetailActivity;
+import com.example.musicplayerapplication.Activity.AlbumDetailsActivity;
 import com.example.musicplayerapplication.Model.Music;
 import com.example.musicplayerapplication.R;
 
 import java.util.ArrayList;
 
-public class SingerAdapter extends RecyclerView.Adapter<SingerAdapter.MySingerHolder> {
+public class AlbumDetailsAdapter extends
+        RecyclerView.Adapter<AlbumDetailsAdapter.MyAlbumDetailsHolder> {
 
     private Context mContext;
     private ArrayList<Music> mMusicsAlbums;
 
-    public SingerAdapter(Context context, ArrayList<Music> musicsAlbums) {
+    public AlbumDetailsAdapter(Context context, ArrayList<Music> musicsAlbums) {
         mContext = context;
         mMusicsAlbums = musicsAlbums;
     }
 
     @NonNull
     @Override
-    public MySingerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MyAlbumDetailsHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).
-                inflate(R.layout.singer_item, parent, false);
-        return new MySingerHolder(view);
+                inflate(R.layout.music_item, parent, false);
+        return new MyAlbumDetailsHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MySingerHolder holder, int position) {
-        holder.mTextViewAlbum.setText(mMusicsAlbums.get(position).getSinger());
+    public void onBindViewHolder(@NonNull MyAlbumDetailsHolder holder, int position) {
+        holder.mTextViewAlbum.setText(mMusicsAlbums.get(position).getTitle());
         byte[] image = getAlbumArt(mMusicsAlbums.get(position).getPath());
         if (image != null){
             Glide.with(mContext)
@@ -47,14 +48,7 @@ public class SingerAdapter extends RecyclerView.Adapter<SingerAdapter.MySingerHo
                     .load(image)
                     .into(holder.mImageViewAlbum);
         }
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String singerName = mMusicsAlbums.get(position).getSinger();
-                Intent intent = SingerDetailActivity.newIntent(mContext,singerName);
-                mContext.startActivity(intent);
-            }
-        });
+
     }
 
     @Override
@@ -62,15 +56,15 @@ public class SingerAdapter extends RecyclerView.Adapter<SingerAdapter.MySingerHo
         return mMusicsAlbums.size();
     }
 
-    public class MySingerHolder extends RecyclerView.ViewHolder {
+    public class MyAlbumDetailsHolder extends RecyclerView.ViewHolder {
 
         private ImageView mImageViewAlbum;
         private TextView mTextViewAlbum;
 
-        public MySingerHolder(@NonNull View itemView) {
+        public MyAlbumDetailsHolder(@NonNull View itemView) {
             super(itemView);
-            mImageViewAlbum = itemView.findViewById(R.id.singer_image);
-            mTextViewAlbum = itemView.findViewById(R.id.singer_name);
+            mImageViewAlbum = itemView.findViewById(R.id.music_item_image_view);
+            mTextViewAlbum = itemView.findViewById(R.id.music_item_text);
         }
     }
 
@@ -81,5 +75,4 @@ public class SingerAdapter extends RecyclerView.Adapter<SingerAdapter.MySingerHo
         retriever.release();
         return art;
     }
-
 }
