@@ -16,6 +16,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -26,10 +28,13 @@ import com.example.musicplayerapplication.Model.Music;
 import com.example.musicplayerapplication.R;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import static com.example.musicplayerapplication.Activity.MainActivity.mMusicArrayList;
+import static com.example.musicplayerapplication.Activity.MainActivity.repeatBoolean;
+import static com.example.musicplayerapplication.Activity.MainActivity.shuffleBoolean;
 
-public class PlayerActivity extends AppCompatActivity {
+public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener{
 
     public static final String EXTRA_POSITION = "com.example.musicplayerapplication.position";
 
@@ -57,6 +62,7 @@ public class PlayerActivity extends AppCompatActivity {
 
         findView();
         initView();
+        mMediaPlayer.setOnCompletionListener(this);
         setListeners();
         setNewThread();
 
@@ -172,7 +178,8 @@ public class PlayerActivity extends AppCompatActivity {
                     mHandler.postDelayed(this, 100);
                 }
             });
-            mImageViewPlayPauseBtn.setImageResource(R.drawable.ic_pause_icon);
+            mMediaPlayer.setOnCompletionListener(this);
+            mImageViewPlayPauseBtn.setBackgroundResource(R.drawable.ic_pause_icon);
             mMediaPlayer.start();
         } else {
             mMediaPlayer.stop();
@@ -195,7 +202,8 @@ public class PlayerActivity extends AppCompatActivity {
                     mHandler.postDelayed(this, 100);
                 }
             });
-            mImageViewPlayPauseBtn.setImageResource(R.drawable.play_icon);
+            mMediaPlayer.setOnCompletionListener(this);
+            mImageViewPlayPauseBtn.setBackgroundResource(R.drawable.ic_pause_icon);
         }
     }
 
@@ -203,7 +211,14 @@ public class PlayerActivity extends AppCompatActivity {
         if (mMediaPlayer.isPlaying()){
             mMediaPlayer.stop();
             mMediaPlayer.release();
-            position = ((position + 1) % mMusicLists.size());
+
+            if (shuffleBoolean && !repeatBoolean){
+                position = getRandom(mMusicLists.size() -1);
+            } else if (!shuffleBoolean && !repeatBoolean){
+                position = ((position + 1) % mMusicLists.size());
+            }
+            // else: position will not change.
+
             uri = Uri.parse(mMusicLists.get(position).getPath());
             mMediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
             metaData(uri);
@@ -221,12 +236,20 @@ public class PlayerActivity extends AppCompatActivity {
                     mHandler.postDelayed(this, 100);
                 }
             });
-            mImageViewPlayPauseBtn.setImageResource(R.drawable.ic_pause_icon);
+            mMediaPlayer.setOnCompletionListener(this);
+            mImageViewPlayPauseBtn.setBackgroundResource(R.drawable.ic_pause_icon);
             mMediaPlayer.start();
         } else {
             mMediaPlayer.stop();
             mMediaPlayer.release();
-            position = ((position + 1) % mMusicLists.size());
+
+            if (shuffleBoolean && !repeatBoolean){
+                position = getRandom(mMusicLists.size() -1);
+            } else if (!shuffleBoolean && !repeatBoolean){
+                position = ((position + 1) % mMusicLists.size());
+            }
+            // else: position will not change.
+
             uri = Uri.parse(mMusicLists.get(position).getPath());
             mMediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
             metaData(uri);
@@ -244,11 +267,13 @@ public class PlayerActivity extends AppCompatActivity {
                     mHandler.postDelayed(this, 100);
                 }
             });
-            mImageViewPlayPauseBtn.setImageResource(R.drawable.play_icon);
+            mMediaPlayer.setOnCompletionListener(this);
+            mImageViewPlayPauseBtn.setBackgroundResource(R.drawable.ic_pause_icon);
         }
     }
 
     /////////////////////////////////////////
+
     private void findView() {
         mTextViewArtistName = findViewById(R.id.artist_name);
         mTextViewSongName = findViewById(R.id.song_name);
@@ -311,7 +336,31 @@ public class PlayerActivity extends AppCompatActivity {
             }
         });
 
-        
+        mImageViewShuffleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (shuffleBoolean){
+                    shuffleBoolean = false;
+                    mImageViewShuffleBtn.setImageResource(R.drawable.shuffle_on_icon);
+                } else {
+                    shuffleBoolean = true;
+                    mImageViewShuffleBtn.setImageResource(R.drawable.ic_shuffle_off);
+                }
+            }
+        });
+
+        mImageViewRepeatBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (repeatBoolean){
+                    repeatBoolean = false;
+                    mImageViewRepeatBtn.setImageResource(R.drawable.ic_repeat_off);
+                } else {
+                    repeatBoolean = true;
+                    mImageViewRepeatBtn.setImageResource(R.drawable.ic_repeat_icon);
+                }
+            }
+        });
     }
 
     private void setNewThread() {
@@ -348,14 +397,11 @@ public class PlayerActivity extends AppCompatActivity {
         int durationTotal = Integer.parseInt(mMusicLists.get(position).getDuration()) / 1000;
         mTextViewDurationTotal.setText(formattedTime(durationTotal));
         byte[] art = retriever.getEmbeddedPicture();
-        Bitmap bitmap;
+        Bitmap bitmap = null;
         if (art != null){
-            Glide.with(this)
-                    .asBitmap()
-                    .load(art)
-                    .into(mImageViewCoverArt);
 
             bitmap = BitmapFactory.decodeByteArray(art, 0, art.length);
+            ImageAnimation(this, mImageViewCoverArt, bitmap);
             Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
                 @Override
                 public void onGenerated(@Nullable Palette palette) {
@@ -398,5 +444,61 @@ public class PlayerActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void ImageAnimation(Context context, ImageView imageView, Bitmap bitmap){
+        Animation animOut = AnimationUtils.loadAnimation(context, android.R.anim.fade_out);
+        Animation animIn = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
+
+        animOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                Glide.with(context).load(bitmap).into(imageView);
+                animIn.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+                imageView.startAnimation(animIn);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        imageView.startAnimation(animOut);
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mediaPlayer) {
+        nextBtnClicked();
+        if (mMediaPlayer != null){
+            mMediaPlayer = MediaPlayer.create(getApplicationContext(), uri );
+            mMediaPlayer.start();
+            mMediaPlayer.setOnCompletionListener(this);
+        }
+    }
+
+    private int getRandom(int i) {
+        Random random = new Random();
+        return random.nextInt(i+1);
     }
 }
