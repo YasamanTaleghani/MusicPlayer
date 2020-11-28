@@ -160,7 +160,14 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
         if (mMediaPlayer.isPlaying()){
             mMediaPlayer.stop();
             mMediaPlayer.release();
-            position = ((position - 1) < 0 ? (mMusicLists.size() -1) : (position - 1));
+
+            if (shuffleBoolean && !repeatBoolean){
+                position = getRandom(mMusicLists.size() -1);
+            } else if (!shuffleBoolean && !repeatBoolean){
+                position = ((position - 1) < 0 ? (mMusicLists.size() -1) : (position - 1));
+            }
+            // else: position will not change.
+
             uri = Uri.parse(mMusicLists.get(position).getPath());
             mMediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
             metaData(uri);
@@ -184,7 +191,14 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
         } else {
             mMediaPlayer.stop();
             mMediaPlayer.release();
-            position = ((position - 1) < 0 ? (mMusicLists.size() -1) : (position - 1));
+
+            if (shuffleBoolean && !repeatBoolean){
+                position = getRandom(mMusicLists.size() -1);
+            } else if (!shuffleBoolean && !repeatBoolean){
+                position = ((position - 1) < 0 ? (mMusicLists.size() -1) : (position - 1));
+            }
+            // else: position will not change.
+
             uri = Uri.parse(mMusicLists.get(position).getPath());
             mMediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
             metaData(uri);
