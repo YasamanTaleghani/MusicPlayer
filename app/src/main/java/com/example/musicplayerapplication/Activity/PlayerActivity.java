@@ -1,9 +1,5 @@
 package com.example.musicplayerapplication.Activity;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.palette.graphics.Palette;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,7 +19,13 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.palette.graphics.Palette;
+
 import com.bumptech.glide.Glide;
+import com.example.musicplayerapplication.Adapter.AlbumDetailsAdapter;
+import com.example.musicplayerapplication.Adapter.SingerDetailsAdapter;
 import com.example.musicplayerapplication.Model.Music;
 import com.example.musicplayerapplication.R;
 
@@ -33,6 +35,8 @@ import java.util.Random;
 import static com.example.musicplayerapplication.Activity.MainActivity.mMusicArrayList;
 import static com.example.musicplayerapplication.Activity.MainActivity.repeatBoolean;
 import static com.example.musicplayerapplication.Activity.MainActivity.shuffleBoolean;
+import static com.example.musicplayerapplication.Activity.AlbumDetailsActivity.mAlbumSongs;
+import static com.example.musicplayerapplication.Activity.SingerDetailActivity.mSingerSongs;
 
 public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener{
 
@@ -46,12 +50,13 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
     private int position = -1;
     public static ArrayList<Music> mMusicLists= new ArrayList<>();
     private static Uri uri;
-    private static MediaPlayer mMediaPlayer;
+    static MediaPlayer mMediaPlayer;
     private Handler mHandler = new Handler();
     private Thread mThreadPlay, mThreadPrev, mThreadNext;
 
-    public static Intent newIntent(Context context){
+    public static Intent newIntent(Context context, int position){
         Intent intent = new Intent(context , PlayerActivity.class);
+        intent.putExtra(EXTRA_POSITION,position);
         return intent;
     }
 
@@ -308,7 +313,17 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
 
     private void initView() {
         position = getIntent().getIntExtra(EXTRA_POSITION, -1);
-        mMusicLists = mMusicArrayList;
+        String sender = getIntent().getStringExtra(AlbumDetailsAdapter.EXTRA_SENDER);
+
+        if (sender != null && sender.equals(AlbumDetailsAdapter.DETAIL_ALBUM)) {
+            mMusicLists = mAlbumSongs;
+        }
+        else if (sender!= null && sender.equals(SingerDetailsAdapter.DETAIL_SINGER)){
+            mMusicLists = mSingerSongs;
+        } else {
+            mMusicLists = mMusicArrayList;
+        }
+
         if (mMusicLists != null) {
             mImageViewPlayPauseBtn.setImageResource(R.drawable.ic_pause_icon);
             uri = Uri.parse(mMusicLists.get(position).getPath());

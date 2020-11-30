@@ -1,6 +1,7 @@
 package com.example.musicplayerapplication.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaMetadataRetriever;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.musicplayerapplication.Activity.PlayerActivity;
 import com.example.musicplayerapplication.Model.Music;
 import com.example.musicplayerapplication.R;
 
@@ -19,6 +21,9 @@ import java.util.ArrayList;
 
 public class SingerDetailsAdapter
         extends RecyclerView.Adapter<SingerDetailsAdapter.SingerDetailHolder> {
+
+    public static final String EXTRA_SENDER = "com.example.musicplayerapplication.sender";
+    public static final String DETAIL_SINGER = "detail_singer";
 
     private Context mContext;
     private ArrayList<Music> mMusicsAlbums;
@@ -46,6 +51,14 @@ public class SingerDetailsAdapter
                     .load(image)
                     .into(holder.mImageViewAlbum);
         }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = PlayerActivity.newIntent(mContext, position);
+                intent.putExtra(EXTRA_SENDER, DETAIL_SINGER);
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override

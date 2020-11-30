@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.example.musicplayerapplication.Adapter.AlbumDetailsAdapter;
 import com.example.musicplayerapplication.Adapter.SingerDetailsAdapter;
 import com.example.musicplayerapplication.Model.Music;
 import com.example.musicplayerapplication.R;
@@ -27,7 +26,7 @@ public class SingerDetailActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private ImageView mImageView;
     private String albumName;
-    private ArrayList<Music> mAlbumSongs = new ArrayList<>();
+    public static ArrayList<Music> mSingerSongs = new ArrayList<>();
     private SingerDetailsAdapter mSingerDetailsAdapter;
 
     public static Intent newIntent(Context context, String singerName){
@@ -48,8 +47,8 @@ public class SingerDetailActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (! (mAlbumSongs.size()<1)){
-            mSingerDetailsAdapter = new SingerDetailsAdapter(this, mAlbumSongs);
+        if (! (mSingerSongs.size()<1)){
+            mSingerDetailsAdapter = new SingerDetailsAdapter(this, mSingerSongs);
             mRecyclerView.setAdapter(mSingerDetailsAdapter);
             mRecyclerView.setLayoutManager(
                     new LinearLayoutManager(
@@ -70,13 +69,13 @@ public class SingerDetailActivity extends AppCompatActivity {
         if (albumName != null ){
             for (int i = 0; i < mMusicArrayList.size(); i++) {
                 if (albumName.equals(mMusicArrayList.get(i).getSinger())) {
-                    mAlbumSongs.add(j, mMusicArrayList.get(i));
+                    mSingerSongs.add(j, mMusicArrayList.get(i));
                     j++;
                 }
             }
         }
 
-        byte[] image = getAlbumArt(mAlbumSongs.get(0).getPath());
+        byte[] image = getAlbumArt(mSingerSongs.get(0).getPath());
         if (image != null) {
             Glide.with(this)
                     .load(image)

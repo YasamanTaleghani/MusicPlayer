@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.musicplayerapplication.Activity.AlbumDetailsActivity;
+import com.example.musicplayerapplication.Activity.PlayerActivity;
 import com.example.musicplayerapplication.Model.Music;
 import com.example.musicplayerapplication.R;
 
@@ -21,6 +22,9 @@ import java.util.ArrayList;
 
 public class AlbumDetailsAdapter extends
         RecyclerView.Adapter<AlbumDetailsAdapter.MyAlbumDetailsHolder> {
+
+    public static final String EXTRA_SENDER = "com.example.musicplayerapplication.sender";
+    public static final String DETAIL_ALBUM = "detailAlbum";
 
     private Context mContext;
     private ArrayList<Music> mMusicsAlbums;
@@ -48,7 +52,14 @@ public class AlbumDetailsAdapter extends
                     .load(image)
                     .into(holder.mImageViewAlbum);
         }
-
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = PlayerActivity.newIntent(mContext,position);
+                intent.putExtra(EXTRA_SENDER, DETAIL_ALBUM);
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override

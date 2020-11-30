@@ -25,7 +25,7 @@ public class AlbumDetailsActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private ImageView mImageView;
     private String albumName;
-    private ArrayList<Music> mAlbumSongs = new ArrayList<>();
+    public static ArrayList<Music> mAlbumSongs = new ArrayList<>();
     private AlbumDetailsAdapter mAlbumDetailsAdapter;
 
     public static Intent newIntent(Context context, String albumName){
