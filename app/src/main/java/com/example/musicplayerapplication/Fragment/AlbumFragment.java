@@ -16,6 +16,9 @@ import com.example.musicplayerapplication.Adapter.MusicAdapter;
 import com.example.musicplayerapplication.R;
 
 import static com.example.musicplayerapplication.Activity.MainActivity.mMusicArrayList;
+import static com.example.musicplayerapplication.Activity.MainActivity.albums;
+
+
 
 
 public class AlbumFragment extends Fragment {
@@ -57,8 +60,8 @@ public class AlbumFragment extends Fragment {
 
     private void initView() {
         mRecyclerView.setHasFixedSize(true);
-        if (mMusicArrayList.size()>0){
-            mAlbumAdapter = new AlbumAdapter(getContext(), mMusicArrayList);
+        if (albums.size()>0){
+            mAlbumAdapter = new AlbumAdapter(getContext(), albums);
             mRecyclerView.setAdapter(mAlbumAdapter);
             mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         }

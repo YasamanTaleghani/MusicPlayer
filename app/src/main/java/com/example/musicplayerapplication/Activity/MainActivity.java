@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private PageAdapter mPageAdapter;
     public static ArrayList<Music> mMusicArrayList;
     static boolean shuffleBoolean = false, repeatBoolean = false;
+    public static ArrayList<Music> albums = new ArrayList<>();
+    public static ArrayList<Music> singers = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,6 +153,9 @@ public class MainActivity extends AppCompatActivity {
 
     public static ArrayList<Music> getAllAudios(Context context){
         ArrayList<Music> tempAudiolist = new ArrayList<>();
+        ArrayList<String> albumDuplicate = new ArrayList<>();
+        ArrayList<String> singerDuplicate = new ArrayList<>();
+
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String[] projection = {
                 MediaStore.Audio.Media.ALBUM,
@@ -179,6 +184,14 @@ public class MainActivity extends AppCompatActivity {
                 Music music = new Music(path,title,artist,album,duration);
                 Log.e("Path: " + path, "Album: "+ album);
                 tempAudiolist.add(music);
+                if (!albumDuplicate.contains(album)){
+                    albums.add(music);
+                    albumDuplicate.add(album);
+                }
+                if (!singerDuplicate.contains(artist)) {
+                    singers.add(music);
+                    singerDuplicate.add(artist);
+                }
             }
             cursor.close();
         }

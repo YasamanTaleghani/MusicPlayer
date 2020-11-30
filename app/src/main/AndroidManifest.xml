@@ -11,8 +11,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:name=".ApplicationClass"
         android:theme="@style/Theme.MusicPlayerApplication">
-        <activity android:name=".Activity.SingerDetailActivity"></activity>
+        <activity android:name=".Activity.SingerDetailActivity" />
         <activity android:name=".Activity.AlbumDetailsActivity" />
         <activity android:name=".Activity.PlayerActivity" />
 

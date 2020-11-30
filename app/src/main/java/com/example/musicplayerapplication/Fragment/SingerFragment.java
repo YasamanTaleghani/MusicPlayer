@@ -15,6 +15,7 @@ import com.example.musicplayerapplication.Adapter.SingerAdapter;
 import com.example.musicplayerapplication.R;
 
 import static com.example.musicplayerapplication.Activity.MainActivity.mMusicArrayList;
+import static com.example.musicplayerapplication.Activity.MainActivity.singers;
 
 
 public class SingerFragment extends Fragment {
@@ -56,8 +57,8 @@ public class SingerFragment extends Fragment {
 
     private void initView() {
         mRecyclerView.setHasFixedSize(true);
-        if (mMusicArrayList.size()>0){
-            mSingerAdapter = new SingerAdapter(getContext(), mMusicArrayList);
+        if (singers.size()>0){
+            mSingerAdapter = new SingerAdapter(getContext(), singers);
             mRecyclerView.setAdapter(mSingerAdapter);
             mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         }
